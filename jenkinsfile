@@ -2,21 +2,21 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'your-dockerhub-username/java-ci-pipeline'
+        DOCKER_IMAGE = 'vinayko/vinaykontham'
         NEXUS_URL = 'http://localhost:8081/repository/maven-releases/'
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/your-username/java-ci-pipeline.git'
+                git 'https://github.com/vinaykontham/javaciapp.git'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn clean verify sonar:sonar -Dsonar.login=<SONARQUBE_TOKEN>'
+                    sh 'mvn clean verify sonar:sonar -Dsonar.login=admin -Dsonar.password=admin'
 
                 }
             }
@@ -33,7 +33,7 @@ pipeline {
                 sh """
                 mvn deploy:deploy-file -DgroupId=com.example -DartifactId=java-ci-pipeline -Dversion=1.0.0 \
                     -Dpackaging=jar -Dfile=target/java-ci-pipeline-1.0.0.jar \
-                    -DrepositoryId=nexus -Durl=$NEXUS_URL
+                    -DrepositoryId=jfrog -Durl=$NEXUS_URL
                 """
             }
         }
